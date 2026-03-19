@@ -6,6 +6,8 @@ import { Locker } from '../domain/lockers';
 import { LockersMapper } from '../mappers/lockers.mapper';
 import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 import { PagedResponse } from 'src/shared/configuration/paged.response';
+import { LockerStatusVO } from '../value-objects/locker-status.vo';
+import { DoorStateVO } from '../value-objects/door-state.vo';
 
 @Injectable()
 export class LockersRepository {
@@ -96,5 +98,22 @@ export class LockersRepository {
 
   async delete(id: Uuid): Promise<void> {
     await this.repository.delete({ id });
+  }
+
+  async findAvailableLocker(): Promise<Locker | null> {
+    return LockersMapper.toDomainOrNull(
+      await this.repository.findOne({
+        where: { status: LockerStatusVO.AVAILABLE },
+        order: { createdAt: 'ASC' },
+      }),
+    );
+  }
+
+  async updateStatus(id: Uuid, status: LockerStatusVO): Promise<void> {
+    await this.repository.update({ id }, { status });
+  }
+
+  async updateDoorState(id: Uuid, doorState: DoorStateVO): Promise<void> {
+    await this.repository.update({ id }, { doorState });
   }
 }

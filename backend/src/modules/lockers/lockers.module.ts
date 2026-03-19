@@ -26,5 +26,6 @@ const queryHandlers = [
   imports: [TypeOrmModule.forFeature([LockerEntity]), CqrsModule],
   providers: [...commandHandlers, ...queryHandlers, LockersRepository],
   controllers: [LockersController],
+  exports: [LockersRepository],
 })
 export class LockersModule {}

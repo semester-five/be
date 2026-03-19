@@ -1,8 +1,9 @@
 import { AbstractEntity } from 'src/shared/infra/typeorm/persistence/type-orm.abstract.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { LockerSizeVO } from '../value-objects/locker-size.vo';
 import { LockerStatusVO } from '../value-objects/locker-status.vo';
 import { DoorStateVO } from '../value-objects/door-state.vo';
+import { SessionEntity } from 'src/modules/sessions/entities/session.entity';
 
 @Entity('lockers')
 export class LockerEntity extends AbstractEntity {
@@ -29,4 +30,7 @@ export class LockerEntity extends AbstractEntity {
 
   @Column({ enum: DoorStateVO, type: 'enum' })
   doorState: DoorStateVO;
+
+  @OneToMany(() => SessionEntity, (session) => session.locker)
+  sessions: SessionEntity[];
 }

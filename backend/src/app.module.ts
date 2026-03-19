@@ -11,6 +11,9 @@ import { SharedModule } from './shared/shared.module';
 import { MediaModule } from './modules/media/media.module';
 import { S3Module } from './modules/s3/s3.module';
 import { LockersModule } from './modules/lockers/lockers.module';
+import { SessionsModule } from './modules/sessions/sessions.module';
+import { QRTokensModule } from './modules/qr-tokens/qr-tokens.module';
+import { FaceRecognitionModule } from './modules/face-recognition/face-recognition.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { LockersModule } from './modules/lockers/lockers.module';
     MediaModule,
     S3Module,
     LockersModule,
+    SessionsModule,
+    QRTokensModule,
+    FaceRecognitionModule,
   ],
   providers: [
     {

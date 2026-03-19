@@ -16,6 +16,7 @@ export class LockersMapper {
       doorState: locker.doorState,
       createdAt: locker.createdAt,
       updatedAt: locker.updatedAt,
+      sessions: [],
     };
   }
 
