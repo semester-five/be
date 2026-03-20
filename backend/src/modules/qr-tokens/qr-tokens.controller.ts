@@ -11,6 +11,9 @@ import {
   GenerateQRResponseDto,
   VerifyQRResponseDto,
 } from './dtos/responses/qr-token.response.dto';
+import { AuthUser } from 'src/decorator/auth-user.decorator';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { RequireLoggedIn } from 'src/guards/role-container';
 
 @ApiTags('QR Tokens')
 @Controller('qr-tokens')
@@ -18,15 +21,17 @@ export class QRTokensController {
   constructor(private readonly qrTokensService: QRTokensService) {}
 
   @Post('generate')
-  @ApiOperation({ summary: 'Create QR token' })
+  @ApiOperation({ summary: 'Create QR token for check-in/check-out' })
   @ApiResponse({ status: 201, description: 'QR token created successfully' })
   @ApiBearerAuth()
+  @RequireLoggedIn()
   async generateQR(
+    @AuthUser() user: UserEntity,
     @Body() generateQRRequestDto: GenerateQRRequestDto,
   ): Promise<GenerateQRResponseDto> {
     const qrToken = await this.qrTokensService.generateToken(
+      user.id,
       generateQRRequestDto.action,
-      generateQRRequestDto.sessionId,
     );
 
     return {

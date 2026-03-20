@@ -11,7 +11,7 @@ import {
   BadRequestException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+import { QRTokenActionVO } from 'src/modules/qr-tokens/value-objects/qr-token-action.vo';
 
 @CommandHandler(SessionCheckInQRCommand)
 export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCheckInQRCommand> {
@@ -33,7 +33,7 @@ export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCh
       });
     }
 
-    if (verifiedToken.action !== 'check_in') {
+    if (verifiedToken.action !== QRTokenActionVO.CHECK_IN) {
       throw new BadRequestException({
         code: 'INVALID_QR_ACTION',
         message: 'QR token is not for check-in action',
@@ -50,8 +50,9 @@ export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCh
     }
 
     const session = Session.create({
-      userId: verifiedToken.userId as Uuid,
+      userId: verifiedToken.userId,
       lockerId: availableLocker.id,
+      locker: availableLocker,
       checkInAt: new Date(),
       checkOutAt: null,
       status: SessionStatusVO.ACTIVE,

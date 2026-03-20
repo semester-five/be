@@ -75,7 +75,7 @@ export class SessionCheckOutCommandHandler implements ICommandHandler<SessionChe
       });
     }
 
-    session.complete();
+    // session.complete();
     await this.sessionsRepository.update(session);
 
     await this.lockersRepository.updateStatus(

@@ -7,9 +7,9 @@ import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 
 export interface VerifiedToken {
   valid: boolean;
-  userId: string | null;
-  action: string;
-  sessionId: string | null;
+  userId: Uuid | null;
+  action: QRTokenActionVO | '';
+  sessionId: Uuid | null;
   tokenId?: Uuid;
 }
 
@@ -20,27 +20,24 @@ export class QRTokensService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async generateToken(action: string, sessionId?: string): Promise<QRToken> {
+  async generateToken(userId: Uuid, action: QRTokenActionVO): Promise<QRToken> {
     const payload = {
+      userId,
       action,
-      sessionId,
       type: 'qr_token',
     };
-
-    const token = this.jwtService.sign(payload, {
-      expiresIn: '5m',
-    });
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + 5);
 
     const qrToken = QRToken.create({
-      action: action.toUpperCase() as QRTokenActionVO,
-      token,
+      action,
+      token: this.jwtService.sign(payload, {
+        expiresIn: '5m',
+      }),
       expiresAt,
       isUsed: false,
-      userId: null,
-      sessionId: sessionId as Uuid,
+      userId,
     });
 
     await this.qrTokensRepository.save(qrToken);
@@ -55,25 +52,7 @@ export class QRTokensService {
 
       const qrToken = await this.qrTokensRepository.findByToken(token);
 
-      if (!qrToken) {
-        return {
-          valid: false,
-          userId: null,
-          action: '',
-          sessionId: null,
-        };
-      }
-
-      if (qrToken.isUsed) {
-        return {
-          valid: false,
-          userId: null,
-          action: '',
-          sessionId: null,
-        };
-      }
-
-      if (qrToken.checkExpired()) {
+      if (!qrToken || !qrToken.userId || !qrToken.action) {
         return {
           valid: false,
           userId: null,
@@ -84,9 +63,9 @@ export class QRTokensService {
 
       return {
         valid: true,
-        userId: qrToken.userId as string | null,
-        action: qrToken.action.toLowerCase(),
-        sessionId: qrToken.sessionId as string | null,
+        userId: qrToken.userId,
+        action: qrToken.action,
+        sessionId: qrToken.sessionId,
         tokenId: qrToken.id,
       };
     } catch {

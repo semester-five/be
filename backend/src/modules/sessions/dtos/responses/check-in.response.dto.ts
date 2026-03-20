@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Session } from '../../domain/session';
 
 export class LockerResponseDto {
   @ApiProperty()
@@ -24,22 +25,16 @@ export class CheckInResponseDto {
   @ApiProperty()
   authMethod: string;
 
-  static fromDomain(
-    sessionId: string,
-    lockerCode: string,
-    lockerLocation: string,
-    checkInAt: Date,
-    authMethod: string,
-  ): CheckInResponseDto {
-    const dto = new CheckInResponseDto();
-    dto.sessionId = sessionId;
-    dto.locker = {
-      id: '',
-      lockerCode,
-      location: lockerLocation,
+  static fromDomain(session: Session): CheckInResponseDto {
+    return {
+      sessionId: session.id,
+      locker: {
+        id: session.lockerId,
+        lockerCode: session.locker.code,
+        location: session.locker.location,
+      },
+      checkInAt: session.checkInAt,
+      authMethod: session.authMethod,
     };
-    dto.checkInAt = checkInAt;
-    dto.authMethod = authMethod;
-    return dto;
   }
 }

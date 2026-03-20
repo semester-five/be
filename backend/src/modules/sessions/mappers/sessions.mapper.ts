@@ -1,3 +1,4 @@
+import { LockersMapper } from 'src/modules/lockers/mappers/lockers.mapper';
 import { Session } from '../domain/session';
 import { SessionEntity } from '../entities/session.entity';
 import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
@@ -5,8 +6,9 @@ import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 export class SessionsMapper {
   static toDomain(entity: SessionEntity): Session {
     return Session.create({
-      userId: entity.userId as Uuid,
-      lockerId: entity.lockerId as Uuid,
+      userId: entity.userId,
+      lockerId: entity.lockerId,
+      locker: LockersMapper.toDomain(entity.locker),
       checkInAt: entity.checkInAt,
       checkOutAt: entity.checkOutAt,
       status: entity.status,
@@ -32,6 +34,7 @@ export class SessionsMapper {
       id: session.id,
       userId: session.userId,
       lockerId: session.lockerId,
+      locker: LockersMapper.toEntity(session.locker),
       checkInAt: session.checkInAt,
       checkOutAt: session.checkOutAt,
       status: session.status,

@@ -34,6 +34,7 @@ export class SessionCheckInFaceCommandHandler implements ICommandHandler<Session
     const session = Session.create({
       userId: null,
       lockerId: availableLocker.id,
+      locker: availableLocker,
       checkInAt: new Date(),
       checkOutAt: null,
       status: SessionStatusVO.ACTIVE,

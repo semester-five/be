@@ -1,19 +1,9 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsOptional, IsUUID } from 'class-validator';
-
-export enum QRTokenAction {
-  CHECK_IN = 'check_in',
-  CHECK_OUT = 'check_out',
-  UPDATE = 'update',
-}
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum } from 'class-validator';
+import { QRTokenActionVO } from '../../value-objects/qr-token-action.vo';
 
 export class GenerateQRRequestDto {
-  @ApiProperty({ enum: QRTokenAction })
-  @IsEnum(QRTokenAction)
-  action: QRTokenAction;
-
-  @ApiPropertyOptional()
-  @IsOptional()
-  @IsUUID()
-  sessionId?: string;
+  @ApiProperty({ enum: QRTokenActionVO })
+  @IsEnum(QRTokenActionVO)
+  action: QRTokenActionVO;
 }

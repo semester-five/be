@@ -1,24 +1,24 @@
 import { QRToken } from '../domain/qr-token';
 import { QRTokenEntity } from '../entities/qr-token.entity';
-import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+import _ from 'lodash';
 
 export class QRTokensMapper {
   static toDomain(entity: QRTokenEntity): QRToken {
-    return QRToken.create({
+    return {
+      id: entity.id,
       action: entity.action,
       token: entity.token,
       expiresAt: entity.expiresAt,
       isUsed: entity.isUsed,
-      userId: entity.userId as Uuid,
-      sessionId: entity.sessionId as Uuid,
-      id: entity.id,
+      userId: entity.userId,
+      sessionId: entity.sessionId,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
-    });
+    };
   }
 
   static toDomains(entities: QRTokenEntity[]): QRToken[] {
-    return entities.map((entity) => this.toDomain(entity));
+    return _.map(entities, (entity) => this.toDomain(entity));
   }
 
   static toDomainOrNull(entity: QRTokenEntity | null): QRToken | null {

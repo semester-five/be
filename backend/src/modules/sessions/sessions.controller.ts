@@ -57,13 +57,7 @@ export class SessionsController {
       new SessionCheckInFaceCommand(faceImage),
     );
 
-    return CheckInResponseDto.fromDomain(
-      session.id,
-      session.lockerId,
-      'Floor 1',
-      session.checkInAt,
-      session.authMethod,
-    );
+    return CheckInResponseDto.fromDomain(session);
   }
 
   @Post('check-in/qr')
@@ -76,13 +70,7 @@ export class SessionsController {
       new SessionCheckInQRCommand(checkInQRRequestDto.qrToken),
     );
 
-    return CheckInResponseDto.fromDomain(
-      session.id,
-      session.lockerId,
-      'Floor 1',
-      session.checkInAt,
-      session.authMethod,
-    );
+    return CheckInResponseDto.fromDomain(session);
   }
 
   @Post(':id/update')
