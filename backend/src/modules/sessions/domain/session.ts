@@ -5,20 +5,14 @@ import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 import { generateUuid } from 'src/utils/uuid.utils';
 import { Locker } from 'src/modules/lockers/domain/lockers';
 
-// interface MutableSession {
-//   checkOutAt: Date | null;
-//   status: SessionStatusVO;
-//   updatedAt: Date;
-// }
-
 export class Session extends BaseEntity {
   constructor(
     public readonly userId: Uuid | null,
     public readonly lockerId: Uuid,
     public readonly locker: Locker,
     public readonly checkInAt: Date,
-    public readonly checkOutAt: Date | null,
-    public readonly status: SessionStatusVO,
+    public checkOutAt: Date | null,
+    public status: SessionStatusVO,
     public readonly authMethod: AuthMethodVO,
     public readonly guestFaceVector: number[] | null,
     public readonly qrTokenId: Uuid | null,
@@ -44,19 +38,16 @@ export class Session extends BaseEntity {
       id: props.id ?? generateUuid(),
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
-    };
+    } as Session;
   }
 
-  // complete(): void {
-  //   const mutable = this as unknown as MutableSession;
-  //   mutable.checkOutAt = new Date();
-  //   mutable.status = SessionStatusVO.COMPLETED;
-  //   mutable.updatedAt = new Date();
-  // }
+  complete(): void {
+    this.checkOutAt = new Date();
+    this.status = SessionStatusVO.COMPLETED;
+  }
 
-  // cancel(): void {
-  //   const mutable = this as unknown as MutableSession;
-  //   mutable.status = SessionStatusVO.CANCELLED;
-  //   mutable.updatedAt = new Date();
-  // }
+  cancel(): void {
+    this.checkOutAt = new Date();
+    this.status = SessionStatusVO.CANCELLED;
+  }
 }

@@ -43,8 +43,7 @@ export class SessionCheckOutCommandHandler implements ICommandHandler<SessionChe
     let isValid = false;
 
     if (command.faceImage && session.authMethod === AuthMethodVO.FACE_ID) {
-      const storedVector = session.guestFaceVector;
-      if (!storedVector) {
+      if (!session.guestFaceVector) {
         throw new BadRequestException({
           code: 'NO_FACE_DATA',
           message: 'No face data available',
@@ -53,7 +52,7 @@ export class SessionCheckOutCommandHandler implements ICommandHandler<SessionChe
 
       const confidence = await this.faceRecognitionService.verifyFace(
         command.faceImage.buffer,
-        storedVector,
+        session.guestFaceVector,
       );
 
       if (confidence >= 0.8) {
@@ -70,12 +69,11 @@ export class SessionCheckOutCommandHandler implements ICommandHandler<SessionChe
 
     if (!isValid) {
       throw new UnauthorizedException({
-        code: 'FACE_MISMATCH',
-        message: 'Face does not match the person who checked in',
+        message: 'Authentication failed',
       });
     }
 
-    // session.complete();
+    session.complete();
     await this.sessionsRepository.update(session);
 
     await this.lockersRepository.updateStatus(

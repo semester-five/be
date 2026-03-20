@@ -79,12 +79,12 @@ export class SessionsController {
   @ApiResponse({ status: 200, description: 'Session updated successfully' })
   @UseInterceptors(FileInterceptor('faceImage'))
   async updateSession(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: Uuid,
     @Body() body: SessionUpdateRequestDto,
     @UploadedFile() faceImage: Express.Multer.File,
   ) {
     await this.commandBus.execute(
-      new SessionUpdateCommand(id as Uuid, faceImage, body.qrToken),
+      new SessionUpdateCommand(id, faceImage, body.qrToken),
     );
 
     return { success: true, message: 'Locker opened' };
@@ -96,19 +96,14 @@ export class SessionsController {
   @ApiResponse({ status: 200, description: 'Check-out successful' })
   @UseInterceptors(FileInterceptor('faceImage'))
   async checkOut(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: Uuid,
     @Body() body: CheckOutRequestDto,
     @UploadedFile() faceImage: Express.Multer.File,
   ): Promise<CheckOutResponseDto> {
-    const session: Session = await this.commandBus.execute(
-      new SessionCheckOutCommand(id as Uuid, faceImage, body.qrToken),
-    );
-
     return CheckOutResponseDto.fromDomain(
-      session.id,
-      session.lockerId,
-      session.checkInAt,
-      session.checkOutAt!,
+      await this.commandBus.execute(
+        new SessionCheckOutCommand(id, faceImage, body.qrToken),
+      ),
     );
   }
 
@@ -118,18 +113,13 @@ export class SessionsController {
   @RequiredRoles([RoleType.ADMIN])
   @ApiBearerAuth()
   async forceCheckOut(
-    @Param('id', ParseUUIDPipe) id: string,
+    @Param('id', ParseUUIDPipe) id: Uuid,
     @Body('reason') reason: string,
   ): Promise<CheckOutResponseDto> {
-    const session: Session = await this.commandBus.execute(
-      new SessionForceCheckOutCommand(id as Uuid, reason),
-    );
-
     return CheckOutResponseDto.fromDomain(
-      session.id,
-      session.lockerId,
-      session.checkInAt,
-      session.checkOutAt!,
+      await this.commandBus.execute(
+        new SessionForceCheckOutCommand(id, reason),
+      ),
     );
   }
 
@@ -153,6 +143,7 @@ export class SessionsController {
   @ApiOperation({ summary: 'Get active session' })
   @ApiResponse({ status: 200, description: 'Active session' })
   @ApiBearerAuth()
+  @RequiredRoles([RoleType.ADMIN])
   async getActive() {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await this.queryBus.execute(new SessionGetActiveQuery());
