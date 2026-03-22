@@ -1,11 +1,9 @@
 import { BaseEntity } from 'src/shared/domain/entities/base.entity';
-import { QRTokenActionVO } from '../value-objects/qr-token-action.vo';
 import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 import { generateUuid } from 'src/utils/uuid.utils';
 
 export class QRToken extends BaseEntity {
   constructor(
-    public readonly action: QRTokenActionVO,
     public readonly token: string,
     public readonly expiresAt: Date,
     public readonly isUsed: boolean,

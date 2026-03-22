@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 
 export class GenerateQRResponseDto {
   @ApiProperty()
-  id: string;
+  id: Uuid;
 
   @ApiProperty()
   token: string;
@@ -15,18 +16,4 @@ export class GenerateQRResponseDto {
 
   @ApiProperty()
   expiresInSeconds: number;
-}
-
-export class VerifyQRResponseDto {
-  @ApiProperty()
-  valid: boolean;
-
-  @ApiProperty()
-  userId: string | null;
-
-  @ApiProperty()
-  action: string;
-
-  @ApiProperty()
-  sessionId: string | null;
 }

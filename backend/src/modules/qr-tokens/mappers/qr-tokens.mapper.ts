@@ -6,7 +6,6 @@ export class QRTokensMapper {
   static toDomain(entity: QRTokenEntity): QRToken {
     return {
       id: entity.id,
-      action: entity.action,
       token: entity.token,
       expiresAt: entity.expiresAt,
       isUsed: entity.isUsed,
@@ -28,7 +27,6 @@ export class QRTokensMapper {
   static toEntity(qrToken: QRToken): Partial<QRTokenEntity> {
     return {
       id: qrToken.id,
-      action: qrToken.action,
       token: qrToken.token,
       expiresAt: qrToken.expiresAt,
       isUsed: qrToken.isUsed,

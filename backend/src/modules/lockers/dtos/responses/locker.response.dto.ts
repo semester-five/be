@@ -28,22 +28,16 @@ export class LockerResponseDto {
   size: LockerSizeVO;
 
   @ApiProperty({
-    example: 'ESP32-123456',
-    description: 'Identifier for the associated ESP32 device',
+    example: 'http://example.com/open',
+    description: 'URL to open the locker',
   })
-  esp32Id: string;
+  openUrl: string;
 
   @ApiProperty({
-    example: 5,
-    description: 'Relay pin number for the locker',
+    example: 'http://example.com/close',
+    description: 'URL to close the locker',
   })
-  relayPin: number;
-
-  @ApiProperty({
-    example: 12,
-    description: 'Sensor pin number for the locker',
-  })
-  sensorPin: number;
+  closeUrl: string;
 
   @ApiProperty({
     example: 'IN_USE',
@@ -71,9 +65,8 @@ export class LockerResponseDto {
       code: locker.code,
       location: locker.location,
       size: locker.size,
-      esp32Id: locker.esp32Id,
-      relayPin: locker.relayPin,
-      sensorPin: locker.sensorPin,
+      openUrl: locker.openUrl,
+      closeUrl: locker.closeUrl,
       status: locker.status,
       doorState: locker.doorState,
       createdAt: locker.createdAt,

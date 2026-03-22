@@ -17,13 +17,10 @@ export class LockerEntity extends AbstractEntity {
   size: LockerSizeVO;
 
   @Column({ unique: true })
-  esp32Id: string;
+  openUrl: string;
 
-  @Column()
-  relayPin: number;
-
-  @Column()
-  sensorPin: number;
+  @Column({ unique: true })
+  closeUrl: string;
 
   @Column({ enum: LockerStatusVO, type: 'enum' })
   status: LockerStatusVO;

@@ -18,16 +18,6 @@ export class LockerCreateCommandHandler implements ICommandHandler<LockerCreateC
       );
     }
 
-    const findByEsp32Id = await this.lockersRepository.findByEsp32Id(
-      command.locker.esp32Id,
-    );
-
-    if (findByEsp32Id) {
-      throw new BadRequestException(
-        `Locker with ESP32 ID ${command.locker.esp32Id} already exists.`,
-      );
-    }
-
     await this.lockersRepository.save(command.locker);
   }
 }

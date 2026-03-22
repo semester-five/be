@@ -5,9 +5,7 @@ import { SessionsController } from './sessions.controller';
 import { SessionEntity } from './entities/session.entity';
 import { SessionsRepository } from './repositories/sessions.repository';
 import { SessionCheckInFaceCommandHandler } from './cqrs/commands/handlers/session-check-in-face.command.handler';
-import { SessionCheckInQRCommandHandler } from './cqrs/commands/handlers/session-check-in-qr.command.handler';
-import { SessionUpdateCommandHandler } from './cqrs/commands/handlers/session-update.command.handler';
-import { SessionCheckOutCommandHandler } from './cqrs/commands/handlers/session-check-out.command.handler';
+import { SessionCICOQRCommandHandler } from './cqrs/commands/handlers/session-cico-qr.command.handler';
 import { SessionForceCheckOutCommandHandler } from './cqrs/commands/handlers/session-force-checkout.command.handler';
 import { SessionGetMySessionsQueryHandler } from './cqrs/queries/handlers/session-get-my-sessions.query.handler';
 import { SessionGetActiveQueryHandler } from './cqrs/queries/handlers/session-get-active.query.handler';
@@ -17,9 +15,7 @@ import { LockersModule } from '../lockers/lockers.module';
 
 const commandHandlers = [
   SessionCheckInFaceCommandHandler,
-  SessionCheckInQRCommandHandler,
-  SessionUpdateCommandHandler,
-  SessionCheckOutCommandHandler,
+  SessionCICOQRCommandHandler,
   SessionForceCheckOutCommandHandler,
 ];
 

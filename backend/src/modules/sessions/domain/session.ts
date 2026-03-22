@@ -40,14 +40,4 @@ export class Session extends BaseEntity {
       updatedAt: props.updatedAt ?? new Date(),
     } as Session;
   }
-
-  complete(): void {
-    this.checkOutAt = new Date();
-    this.status = SessionStatusVO.COMPLETED;
-  }
-
-  cancel(): void {
-    this.checkOutAt = new Date();
-    this.status = SessionStatusVO.CANCELLED;
-  }
 }

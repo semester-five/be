@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { SessionCheckInQRCommand } from '../implements/session-check-in-qr.command';
+import { SessionCICOQRCommand } from '../implements/session-cico-qr.command';
 import { SessionsRepository } from 'src/modules/sessions/repositories/sessions.repository';
 import { LockersRepository } from 'src/modules/lockers/repositories/lockers.repository';
 import { QRTokensService } from 'src/modules/qr-tokens/qr-tokens.service';
@@ -11,33 +11,48 @@ import {
   BadRequestException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import { QRTokenActionVO } from 'src/modules/qr-tokens/value-objects/qr-token-action.vo';
 
-@CommandHandler(SessionCheckInQRCommand)
-export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCheckInQRCommand> {
+@CommandHandler(SessionCICOQRCommand)
+export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQRCommand> {
   constructor(
     private readonly sessionsRepository: SessionsRepository,
     private readonly lockersRepository: LockersRepository,
     private readonly qrTokensService: QRTokensService,
   ) {}
 
-  async execute(command: SessionCheckInQRCommand): Promise<Session> {
+  async execute(command: SessionCICOQRCommand): Promise<Session> {
     const verifiedToken = await this.qrTokensService.verifyToken(
       command.qrToken,
     );
 
-    if (!verifiedToken.valid) {
+    if (!verifiedToken) {
       throw new BadRequestException({
         code: 'INVALID_QR_TOKEN',
         message: 'QR token is invalid or expired',
       });
     }
 
-    if (verifiedToken.action !== QRTokenActionVO.CHECK_IN) {
-      throw new BadRequestException({
-        code: 'INVALID_QR_ACTION',
-        message: 'QR token is not for check-in action',
-      });
+    const activeSession = await this.sessionsRepository.findActiveByUserId(
+      verifiedToken.userId,
+    );
+
+    if (activeSession) {
+      const completedSession = {
+        ...activeSession,
+        checkOutAt: new Date(),
+        status: SessionStatusVO.COMPLETED,
+      } as Session;
+
+      this.sessionsRepository.save(completedSession);
+
+      await this.lockersRepository.updateStatus(
+        activeSession.lockerId,
+        LockerStatusVO.AVAILABLE,
+      );
+
+      await this.qrTokensService.markAsUsed(verifiedToken.id);
+
+      return completedSession;
     }
 
     const availableLocker = await this.lockersRepository.findAvailableLocker();
@@ -58,7 +73,7 @@ export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCh
       status: SessionStatusVO.ACTIVE,
       authMethod: AuthMethodVO.QR_CODE,
       guestFaceVector: null,
-      qrTokenId: verifiedToken.tokenId ?? null,
+      qrTokenId: verifiedToken?.id || null,
     });
 
     await this.sessionsRepository.save(session);
@@ -68,8 +83,8 @@ export class SessionCheckInQRCommandHandler implements ICommandHandler<SessionCh
       LockerStatusVO.IN_USE,
     );
 
-    if (verifiedToken.tokenId) {
-      await this.qrTokensService.markAsUsed(verifiedToken.tokenId);
+    if (verifiedToken) {
+      await this.qrTokensService.markAsUsed(verifiedToken.id);
     }
 
     return session;

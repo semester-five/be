@@ -32,12 +32,6 @@ export class LockersRepository {
     );
   }
 
-  async findByEsp32Id(esp32Id: string): Promise<Locker | null> {
-    return LockersMapper.toDomainOrNull(
-      await this.repository.findOneBy({ esp32Id }),
-    );
-  }
-
   async findAll(
     pageNumber: number,
     pageSize: number,

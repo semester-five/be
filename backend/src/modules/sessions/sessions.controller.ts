@@ -21,13 +21,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { RequiredRoles } from 'src/guards/role-container';
 import { RoleType } from 'src/guards/role-type';
 import { CheckInFaceRequestDto } from './dtos/requests/check-in-face.request.dto';
-import { CheckInQRRequestDto } from './dtos/requests/check-in-qr.request.dto';
-import { SessionUpdateRequestDto } from './dtos/requests/session-update.request.dto';
-import { CheckOutRequestDto } from './dtos/requests/check-out.request.dto';
+import { CicoQRRequestDto } from './dtos/requests/cico-qr.request.dto';
 import { SessionCheckInFaceCommand } from './cqrs/commands/implements/session-check-in-face.command';
-import { SessionCheckInQRCommand } from './cqrs/commands/implements/session-check-in-qr.command';
-import { SessionUpdateCommand } from './cqrs/commands/implements/session-update.command';
-import { SessionCheckOutCommand } from './cqrs/commands/implements/session-check-out.command';
+import { SessionCICOQRCommand } from './cqrs/commands/implements/session-cico-qr.command';
 import { SessionForceCheckOutCommand } from './cqrs/commands/implements/session-force-checkout.command';
 import { SessionGetMySessionsQuery } from './cqrs/queries/implements/session-get-my-sessions.query';
 import { SessionGetActiveQuery } from './cqrs/queries/implements/session-get-active.query';
@@ -60,51 +56,17 @@ export class SessionsController {
     return CheckInResponseDto.fromDomain(session);
   }
 
-  @Post('check-in/qr')
-  @ApiOperation({ summary: 'Check-in with QR Code' })
-  @ApiResponse({ status: 200, description: 'Check-in successful' })
-  async checkInQR(
-    @Body() checkInQRRequestDto: CheckInQRRequestDto,
+  @Post('cico/qr')
+  @ApiOperation({ summary: 'CICO with QR Code' })
+  @ApiResponse({ status: 200, description: 'CICO successful' })
+  async cicoByQRCode(
+    @Body() cicoQRRequestDto: CicoQRRequestDto,
   ): Promise<CheckInResponseDto> {
     const session: Session = await this.commandBus.execute(
-      new SessionCheckInQRCommand(checkInQRRequestDto.qrToken),
+      new SessionCICOQRCommand(cicoQRRequestDto.qrToken),
     );
 
     return CheckInResponseDto.fromDomain(session);
-  }
-
-  @Post(':id/update')
-  @ApiOperation({ summary: 'Update session (add items)' })
-  @ApiConsumes('multipart/form-data')
-  @ApiResponse({ status: 200, description: 'Session updated successfully' })
-  @UseInterceptors(FileInterceptor('faceImage'))
-  async updateSession(
-    @Param('id', ParseUUIDPipe) id: Uuid,
-    @Body() body: SessionUpdateRequestDto,
-    @UploadedFile() faceImage: Express.Multer.File,
-  ) {
-    await this.commandBus.execute(
-      new SessionUpdateCommand(id, faceImage, body.qrToken),
-    );
-
-    return { success: true, message: 'Locker opened' };
-  }
-
-  @Post(':id/check-out')
-  @ApiOperation({ summary: 'Check-out items' })
-  @ApiConsumes('multipart/form-data')
-  @ApiResponse({ status: 200, description: 'Check-out successful' })
-  @UseInterceptors(FileInterceptor('faceImage'))
-  async checkOut(
-    @Param('id', ParseUUIDPipe) id: Uuid,
-    @Body() body: CheckOutRequestDto,
-    @UploadedFile() faceImage: Express.Multer.File,
-  ): Promise<CheckOutResponseDto> {
-    return CheckOutResponseDto.fromDomain(
-      await this.commandBus.execute(
-        new SessionCheckOutCommand(id, faceImage, body.qrToken),
-      ),
-    );
   }
 
   @Post(':id/force-checkout')

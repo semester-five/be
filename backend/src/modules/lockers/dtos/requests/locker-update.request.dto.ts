@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LockerSizeVO } from '../../value-objects/locker-size.vo';
-import { IsEnum, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { LockerStatusVO } from '../../value-objects/locker-status.vo';
 import { DoorStateVO } from '../../value-objects/door-state.vo';
 import { Locker } from '../../domain/lockers';
@@ -29,25 +29,20 @@ export class LockerUpdateRequestDto {
   size: LockerSizeVO;
 
   @ApiProperty({
-    example: 'ESP32-123456',
-    description: 'Identifier for the associated ESP32 device',
+    example: 'https://api.locker-system.com/lockers/LKR-001/open',
+    description: 'API endpoint to open the locker',
   })
   @IsString()
-  esp32Id: string;
+  @IsNotEmpty()
+  openUrl: string;
 
   @ApiProperty({
-    example: 5,
-    description: 'Relay pin number for the locker',
+    example: 'https://api.locker-system.com/lockers/LKR-001/close',
+    description: 'API endpoint to close the locker',
   })
-  @IsNumber()
-  relayPin: number;
-
-  @ApiProperty({
-    example: 12,
-    description: 'Sensor pin number for the locker',
-  })
-  @IsNumber()
-  sensorPin: number;
+  @IsString()
+  @IsNotEmpty()
+  closeUrl: string;
 
   @ApiProperty({
     example: 'IN_USE',
