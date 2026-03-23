@@ -8,7 +8,7 @@ import { SessionCICOFaceCommandHandler } from './cqrs/commands/handlers/session-
 import { SessionCICOQRCommandHandler } from './cqrs/commands/handlers/session-cico-qr.command.handler';
 import { SessionForceCheckOutCommandHandler } from './cqrs/commands/handlers/session-force-checkout.command.handler';
 import { SessionGetMySessionsQueryHandler } from './cqrs/queries/handlers/session-get-my-sessions.query.handler';
-import { SessionGetActiveQueryHandler } from './cqrs/queries/handlers/session-get-active.query.handler';
+import { SessionGetAllActiveQueryHandler } from './cqrs/queries/handlers/session-get-all-active.query.handler';
 import { QRTokensModule } from '../qr-tokens/qr-tokens.module';
 import { LockersModule } from '../lockers/lockers.module';
 
@@ -20,7 +20,7 @@ const commandHandlers = [
 
 const queryHandlers = [
   SessionGetMySessionsQueryHandler,
-  SessionGetActiveQueryHandler,
+  SessionGetAllActiveQueryHandler,
 ];
 
 @Module({

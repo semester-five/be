@@ -80,6 +80,30 @@ export class SessionsRepository {
     };
   }
 
+  async findAllActivePaginated(
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<PagedResponse<Session>> {
+    const queryBuilder = this.repository
+      .createQueryBuilder('session')
+      .leftJoinAndSelect('session.locker', 'locker')
+      .where('session.status = :status', { status: SessionStatusVO.ACTIVE });
+
+    const [entities, totalRecords] = await queryBuilder
+      .skip((pageNumber - 1) * pageSize)
+      .take(pageSize)
+      .orderBy('session.checkInAt', 'DESC')
+      .getManyAndCount();
+
+    return {
+      data: SessionsMapper.toDomains(entities),
+      pageNumber,
+      pageSize,
+      totalRecords,
+      totalPages: Math.ceil(totalRecords / pageSize),
+    };
+  }
+
   async findActiveByUserId(userId: Uuid): Promise<Session | null> {
     return SessionsMapper.toDomainOrNull(
       await this.repository.findOne({

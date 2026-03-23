@@ -1,21 +1,19 @@
 import { QueryHandler, IQueryHandler } from '@nestjs/cqrs';
-import { SessionGetMySessionsQuery } from '../implements/session-get-my-sessions.query';
+import { SessionGetAllActiveQuery } from '../implements/session-get-all-active.query';
 import { SessionsRepository } from 'src/modules/sessions/repositories/sessions.repository';
 import { PagedResponse } from 'src/shared/configuration/paged.response';
 import { Session } from 'src/modules/sessions/domain/session';
 
-@QueryHandler(SessionGetMySessionsQuery)
-export class SessionGetMySessionsQueryHandler implements IQueryHandler<SessionGetMySessionsQuery> {
+@QueryHandler(SessionGetAllActiveQuery)
+export class SessionGetAllActiveQueryHandler implements IQueryHandler<SessionGetAllActiveQuery> {
   constructor(private readonly sessionsRepository: SessionsRepository) {}
 
   async execute(
-    query: SessionGetMySessionsQuery,
+    query: SessionGetAllActiveQuery,
   ): Promise<PagedResponse<Session>> {
-    return await this.sessionsRepository.findByUserId(
-      query.userId,
+    return await this.sessionsRepository.findAllActivePaginated(
       query.pageNumber,
       query.pageSize,
-      query.status,
     );
   }
 }
