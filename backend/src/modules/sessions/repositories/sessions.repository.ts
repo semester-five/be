@@ -7,6 +7,7 @@ import { SessionsMapper } from '../mappers/sessions.mapper';
 import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 import { PagedResponse } from 'src/shared/configuration/paged.response';
 import { SessionStatusVO } from '../value-objects/session-status.vo';
+import { AuthMethodVO } from '../value-objects/auth-method.vo';
 
 @Injectable()
 export class SessionsRepository {
@@ -120,6 +121,18 @@ export class SessionsRepository {
     await this.repository.update(
       { id: session.id },
       SessionsMapper.toEntity(session),
+    );
+  }
+
+  async findByFaceMethodAndActive(): Promise<Session[]> {
+    return SessionsMapper.toDomains(
+      await this.repository.find({
+        where: {
+          authMethod: AuthMethodVO.FACE_ID,
+          status: SessionStatusVO.ACTIVE,
+        },
+        relations: ['locker'],
+      }),
     );
   }
 }

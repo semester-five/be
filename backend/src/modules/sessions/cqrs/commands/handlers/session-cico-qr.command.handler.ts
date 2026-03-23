@@ -43,7 +43,7 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
         status: SessionStatusVO.COMPLETED,
       } as Session;
 
-      this.sessionsRepository.save(completedSession);
+      await this.sessionsRepository.save(completedSession);
 
       await this.lockersRepository.updateStatus(
         activeSession.lockerId,

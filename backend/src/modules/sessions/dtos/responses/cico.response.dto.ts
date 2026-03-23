@@ -12,7 +12,7 @@ export class LockerResponseDto {
   location: string;
 }
 
-export class CheckInResponseDto {
+export class CICOResponseDto {
   @ApiProperty()
   sessionId: string;
 
@@ -25,7 +25,7 @@ export class CheckInResponseDto {
   @ApiProperty()
   authMethod: string;
 
-  static fromDomain(session: Session): CheckInResponseDto {
+  static fromDomain(session: Session): CICOResponseDto {
     return {
       sessionId: session.id,
       locker: {

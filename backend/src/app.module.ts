@@ -13,7 +13,6 @@ import { S3Module } from './modules/s3/s3.module';
 import { LockersModule } from './modules/lockers/lockers.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { QRTokensModule } from './modules/qr-tokens/qr-tokens.module';
-import { FaceRecognitionModule } from './modules/face-recognition/face-recognition.module';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { FaceRecognitionModule } from './modules/face-recognition/face-recogniti
     LockersModule,
     SessionsModule,
     QRTokensModule,
-    FaceRecognitionModule,
   ],
   providers: [
     {
