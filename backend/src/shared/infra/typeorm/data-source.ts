@@ -15,7 +15,10 @@ export const AppDataSource = new DataSource({
   keepConnectionAlive: true,
   namingStrategy: new SnakeNamingStrategy(),
   logging: process.env.NODE_ENV !== 'production',
-  entities: [__dirname + '/../../../modules/**/entities/*.entity{.ts,.js}'],
+  entities: [
+    __dirname + '/../../../modules/**/entities/*.entity{.ts,.js}',
+    __dirname + '/../../../modules/**/infra/persistence/*.entity{.ts,.js}',
+  ],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   seeds: [__dirname + '/../../../modules/**/entities/seeds/*{.ts,.js}'],
   cli: {

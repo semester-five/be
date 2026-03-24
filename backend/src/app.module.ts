@@ -13,6 +13,11 @@ import { S3Module } from './modules/s3/s3.module';
 import { LockersModule } from './modules/lockers/lockers.module';
 import { SessionsModule } from './modules/sessions/sessions.module';
 import { QRTokensModule } from './modules/qr-tokens/qr-tokens.module';
+import { UserConnectionsModule } from './modules/user-connections/user-connections.module';
+import { SubscriptionsModule } from './modules/subscriptions/subscriptions.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { DeliveryModule } from './modules/delivery/delivery.module';
+import { EventsModule } from './modules/events/events.module';
 
 @Module({
   imports: [
@@ -26,6 +31,11 @@ import { QRTokensModule } from './modules/qr-tokens/qr-tokens.module';
     LockersModule,
     SessionsModule,
     QRTokensModule,
+    UserConnectionsModule,
+    SubscriptionsModule,
+    NotificationsModule,
+    DeliveryModule,
+    EventsModule,
   ],
   providers: [
     {

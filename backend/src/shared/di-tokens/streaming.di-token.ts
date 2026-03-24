@@ -1,0 +1,3 @@
+export const STREAMING_DI_TOKEN = {
+  SERVICE: Symbol('STREAMING_SERVICE'),
+};

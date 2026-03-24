@@ -1,0 +1,3 @@
+export const TRANSLATOR_DI_TOKEN = {
+  SERVICE: Symbol('TRANSLATOR_SERVICE'),
+};
