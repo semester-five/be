@@ -23,6 +23,7 @@ export class UserConnectedCommandHandler implements ICommandHandler<UserConnecte
       await this.repository.save({
         ...userConnection,
         status: StatusEnum.ACTIVE,
+        deviceToken: userConnectedCommand.deviceToken,
         platform: userConnectedCommand.platform,
         lastOnlineAt: new Date(),
       });
@@ -35,6 +36,7 @@ export class UserConnectedCommandHandler implements ICommandHandler<UserConnecte
         userId: userConnectedCommand.userId,
         email: userConnectedCommand.email,
         status: StatusEnum.ACTIVE,
+        deviceToken: userConnectedCommand.deviceToken,
         project: userConnectedCommand.project,
         platform: userConnectedCommand.platform,
         lastOnlineAt: new Date(),

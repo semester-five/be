@@ -18,12 +18,14 @@ import { SubscriptionsModule } from './modules/subscriptions/subscriptions.modul
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { DeliveryModule } from './modules/delivery/delivery.module';
 import { EventsModule } from './modules/events/events.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     AuthModule,
     UserModule,
     CqrsModule,
+    ScheduleModule.forRoot(),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     SharedModule,
     MediaModule,

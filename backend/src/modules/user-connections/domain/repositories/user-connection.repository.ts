@@ -6,4 +6,6 @@ export interface IUserConnectionsRepository extends BaseRepository<UserConnectio
   findByUserId(userId: Uuid): Promise<UserConnection | null>;
 
   findByUserIds(userIds: Uuid[]): Promise<UserConnection[]>;
+
+  findActiveMobileConnectionsByUserId(userId: Uuid): Promise<UserConnection[]>;
 }

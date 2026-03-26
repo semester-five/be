@@ -6,6 +6,8 @@ import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
 import { UserConnection } from 'src/modules/user-connections/domain/entities/user-connection';
 import { IUserConnectionsRepository } from 'src/modules/user-connections/domain/repositories/user-connection.repository';
 import { UserConnectionMapper } from '../mappers/user-connection.mapper';
+import { StatusEnum } from 'src/modules/user-connections/domain/value-objects/status.vo';
+import { PlatformEnum } from 'src/modules/user-connections/domain/value-objects/platform.vo';
 
 @Injectable()
 export class UserConnectionRepository implements IUserConnectionsRepository {
@@ -25,6 +27,19 @@ export class UserConnectionRepository implements IUserConnectionsRepository {
       }),
     );
   }
+
+  async findActiveMobileConnectionsByUserId(
+    userId: Uuid,
+  ): Promise<UserConnection[]> {
+    return UserConnectionMapper.toDomains(
+      await this.repository.findBy({
+        userId,
+        status: StatusEnum.ACTIVE,
+        platform: PlatformEnum.MOBILE,
+      }),
+    );
+  }
+
   async save(userConnection: UserConnection): Promise<void> {
     await this.repository.save(UserConnectionMapper.toEntity(userConnection));
   }

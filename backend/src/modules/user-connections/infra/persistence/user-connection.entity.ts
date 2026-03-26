@@ -17,6 +17,9 @@ export class UserConnectionEntity extends AbstractEntity {
   @Column()
   lastOnlineAt: Date;
 
+  @Column({ type: 'json' })
+  deviceToken: string | null;
+
   @Column()
   project: ProjectsEnums;
 

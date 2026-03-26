@@ -20,7 +20,10 @@ export const AppDataSource = new DataSource({
     __dirname + '/../../../modules/**/infra/persistence/*.entity{.ts,.js}',
   ],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
-  seeds: [__dirname + '/../../../modules/**/entities/seeds/*{.ts,.js}'],
+  seeds: [
+    __dirname + '/../../../modules/**/entities/seeds/*{.ts,.js}',
+    __dirname + '/../../../modules/**/infra/seeds/*{.ts,.js}',
+  ],
   cli: {
     entitiesDir: 'src',
     subscribersDir: 'subscriber',

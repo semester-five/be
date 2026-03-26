@@ -7,6 +7,7 @@ export class UserConnectedCommand implements ICommand {
   constructor(
     public readonly userId: Uuid,
     public readonly email: string,
+    public readonly deviceToken: string | null,
     public readonly platform: PlatformEnum,
     public readonly project: ProjectsEnums,
   ) {}

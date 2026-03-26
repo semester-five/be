@@ -15,13 +15,20 @@ export class UserConnectionEventListener {
   async handleUserConnected(event: {
     userId: string;
     email: string;
+    deviceToken?: string | null;
     platform: PlatformEnum;
     project: ProjectsEnums;
   }): Promise<void> {
-    const { userId, email, platform, project } = event;
+    const { userId, email, deviceToken, platform, project } = event;
 
     await this.commandBus.execute(
-      new UserConnectedCommand(userId as Uuid, email, platform, project),
+      new UserConnectedCommand(
+        userId as Uuid,
+        email,
+        deviceToken ?? null,
+        platform,
+        project,
+      ),
     );
   }
 

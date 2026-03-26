@@ -35,8 +35,23 @@ export class SubscriptionCreateByUserIdCommandHandler implements ICommandHandler
       throw new UserConnectionNotFoundException(command.userId);
     }
 
+    const existingSubscriptions =
+      await this.subscriptionRepository.findByUserId(command.userId);
+
+    const existingEventCodes = new Set(
+      existingSubscriptions.map((subscription) => subscription.event.code),
+    );
+
+    const eventsToSubscribe = events.filter(
+      (event) => !existingEventCodes.has(event.code),
+    );
+
+    if (!eventsToSubscribe.length) {
+      return;
+    }
+
     await this.subscriptionRepository.saves(
-      events.map((event) => {
+      eventsToSubscribe.map((event) => {
         return Subscription.create({
           user: userConnections,
           event,

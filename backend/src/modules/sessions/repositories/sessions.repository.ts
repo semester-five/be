@@ -141,6 +141,22 @@ export class SessionsRepository {
     return SessionsMapper.toDomains(entities);
   }
 
+  async findActiveSessionsCheckedInBetween(
+    from: Date,
+    to: Date,
+  ): Promise<Session[]> {
+    const entities = await this.repository
+      .createQueryBuilder('session')
+      .leftJoinAndSelect('session.locker', 'locker')
+      .where('session.status = :status', { status: SessionStatusVO.ACTIVE })
+      .andWhere('session.checkInAt > :from', { from })
+      .andWhere('session.checkInAt <= :to', { to })
+      .orderBy('session.checkInAt', 'ASC')
+      .getMany();
+
+    return SessionsMapper.toDomains(entities);
+  }
+
   async update(session: Session): Promise<void> {
     await this.repository.update(
       { id: session.id },

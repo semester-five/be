@@ -11,6 +11,8 @@ import { SessionGetMySessionsQueryHandler } from './cqrs/queries/handlers/sessio
 import { SessionGetAllActiveQueryHandler } from './cqrs/queries/handlers/session-get-all-active.query.handler';
 import { QRTokensModule } from '../qr-tokens/qr-tokens.module';
 import { LockersModule } from '../lockers/lockers.module';
+import { SessionLockedNotificationCron } from './tasks/session-locked-notification.cron';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 const commandHandlers = [
   SessionCICOFaceCommandHandler,
@@ -29,9 +31,15 @@ const queryHandlers = [
     CqrsModule,
     QRTokensModule,
     LockersModule,
+    NotificationsModule,
   ],
   controllers: [SessionsController],
-  providers: [...commandHandlers, ...queryHandlers, SessionsRepository],
+  providers: [
+    ...commandHandlers,
+    ...queryHandlers,
+    SessionsRepository,
+    SessionLockedNotificationCron,
+  ],
   exports: [SessionsRepository],
 })
 export class SessionsModule {}

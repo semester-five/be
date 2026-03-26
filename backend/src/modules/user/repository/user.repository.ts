@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
 import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+import { RoleType } from 'src/guards/role-type';
 
 @Injectable()
 export class UserRepository {
@@ -17,6 +18,15 @@ export class UserRepository {
 
   async findAll(): Promise<UserEntity[]> {
     return this.userRepository.find();
+  }
+
+  async findAdminIds(): Promise<Uuid[]> {
+    const admins = await this.userRepository.find({
+      where: { role: RoleType.ADMIN },
+      select: { id: true },
+    });
+
+    return admins.map((admin) => admin.id);
   }
 
   async findById(id: Uuid): Promise<UserEntity | null> {
