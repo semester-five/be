@@ -11,6 +11,7 @@ import {
   BadRequestException,
   ServiceUnavailableException,
 } from '@nestjs/common';
+import axios from 'axios';
 
 @CommandHandler(SessionCICOQRCommand)
 export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQRCommand> {
@@ -83,10 +84,26 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
       LockerStatusVO.IN_USE,
     );
 
+    await this.openLockerDoor(availableLocker.openUrl, availableLocker.code);
+
     if (verifiedToken) {
       await this.qrTokensService.markAsUsed(verifiedToken.id);
     }
 
     return session;
+  }
+
+  private async openLockerDoor(
+    openUrl: string,
+    lockerCode: string,
+  ): Promise<void> {
+    try {
+      await axios.get(openUrl, { timeout: 5000 });
+    } catch {
+      throw new ServiceUnavailableException({
+        code: 'DOOR_OPEN_FAILED',
+        message: `Unable to open locker door for ${lockerCode}`,
+      });
+    }
   }
 }
