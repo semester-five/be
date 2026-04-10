@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CICOFaceRequestDto {
   @ApiProperty({
@@ -9,5 +10,6 @@ export class CICOFaceRequestDto {
     description: 'Face vector extracted from the uploaded image',
     example: [0.1, 0.2, 0.3, 0.4, 0.5],
   })
-  faceVector: number[];
+  @IsNotEmpty()
+  faceVector: number[] = [];
 }

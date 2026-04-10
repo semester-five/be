@@ -115,23 +115,22 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
       throw new Error('Face vectors must be of the same length');
     }
 
-    let dotProduct = 0;
-    let magnitudeA = 0;
-    let magnitudeB = 0;
+    const dotProduct = vectorA.reduce(
+      (sum, value, index) => sum + value * vectorB[index],
+      0,
+    );
+    const normA = Math.sqrt(
+      vectorA.reduce((sum, value) => sum + value * value, 0),
+    );
+    const normB = Math.sqrt(
+      vectorB.reduce((sum, value) => sum + value * value, 0),
+    );
+    const denominator = normA * normB;
 
-    for (let i = 0; i < vectorA.length; i++) {
-      dotProduct += vectorA[i] * vectorB[i];
-      magnitudeA += vectorA[i] * vectorA[i];
-      magnitudeB += vectorB[i] * vectorB[i];
-    }
-
-    magnitudeA = Math.sqrt(magnitudeA);
-    magnitudeB = Math.sqrt(magnitudeB);
-
-    if (magnitudeA === 0 || magnitudeB === 0) {
+    if (denominator === 0) {
       return 0;
     }
 
-    return dotProduct / (magnitudeA * magnitudeB);
+    return dotProduct / denominator;
   }
 }
