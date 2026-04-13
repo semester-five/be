@@ -56,6 +56,8 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
       checkOutAt: null,
       status: SessionStatusVO.ACTIVE,
       authMethod: AuthMethodVO.FACE_ID,
+      age: command.age,
+      gender: command.gender,
       guestFaceVector: command.faceVector,
       qrTokenId: null,
     });

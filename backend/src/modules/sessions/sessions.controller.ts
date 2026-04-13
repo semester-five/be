@@ -49,7 +49,7 @@ export class SessionsController {
   async cicoByFace(@Body() body: CICOFaceRequestDto): Promise<CICOResponseDto> {
     return CICOResponseDto.fromDomain(
       await this.commandBus.execute(
-        new SessionCICOFaceCommand(body.faceVector),
+        new SessionCICOFaceCommand(body.faceVector, body.age, body.gender),
       ),
     );
   }

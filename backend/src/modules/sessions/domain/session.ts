@@ -16,6 +16,8 @@ export class Session extends BaseEntity {
     public readonly authMethod: AuthMethodVO,
     public readonly guestFaceVector: number[] | null,
     public readonly qrTokenId: Uuid | null,
+    public readonly age: number | null,
+    public readonly gender: string | null,
     id: Uuid,
     createdAt: Date,
     updatedAt: Date,
@@ -24,10 +26,7 @@ export class Session extends BaseEntity {
   }
 
   static create(
-    props: Omit<
-      Session,
-      'id' | 'createdAt' | 'updatedAt' | 'complete' | 'cancel'
-    > & {
+    props: Omit<Session, 'id' | 'createdAt' | 'updatedAt'> & {
       id?: Uuid;
       createdAt?: Date;
       updatedAt?: Date;

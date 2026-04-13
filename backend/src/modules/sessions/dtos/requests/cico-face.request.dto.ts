@@ -12,4 +12,20 @@ export class CICOFaceRequestDto {
   })
   @IsNotEmpty()
   faceVector: number[] = [];
+
+  @ApiProperty({
+    type: 'number',
+    description:
+      'The age of the person in the image, used for additional verification',
+    example: 25,
+  })
+  age: number;
+
+  @ApiProperty({
+    type: 'string',
+    description:
+      'Gender of the person in the image, used for additional verification',
+    example: 'male',
+  })
+  gender: string;
 }

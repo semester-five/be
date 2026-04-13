@@ -73,6 +73,8 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
       checkOutAt: null,
       status: SessionStatusVO.ACTIVE,
       authMethod: AuthMethodVO.QR_CODE,
+      age: null,
+      gender: null,
       guestFaceVector: null,
       qrTokenId: verifiedToken?.id || null,
     });

@@ -16,6 +16,8 @@ export class SessionsMapper {
       guestFaceVector: entity.guestFaceVector,
       qrTokenId: entity.qrTokenId as Uuid,
       id: entity.id,
+      age: entity.age,
+      gender: entity.gender,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     });
@@ -39,6 +41,8 @@ export class SessionsMapper {
       checkOutAt: session.checkOutAt,
       status: session.status,
       authMethod: session.authMethod,
+      age: session.age,
+      gender: session.gender,
       guestFaceVector: session.guestFaceVector,
       qrTokenId: session.qrTokenId,
     };

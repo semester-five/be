@@ -43,6 +43,12 @@ export class SessionEntity extends AbstractEntity {
   @Column({ type: 'uuid', nullable: true })
   qrTokenId: Uuid | null;
 
+  @Column({ type: 'int', nullable: true })
+  age: number | null;
+
+  @Column({ type: 'varchar', nullable: true })
+  gender: string | null;
+
   @OneToOne(() => QRTokenEntity, (qrToken) => qrToken.session, {
     nullable: true,
     onDelete: 'SET NULL',
