@@ -19,6 +19,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { DeliveryModule } from './modules/delivery/delivery.module';
 import { EventsModule } from './modules/events/events.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { StatisticsModule } from './modules/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     NotificationsModule,
     DeliveryModule,
     EventsModule,
+    StatisticsModule,
   ],
   providers: [
     {
