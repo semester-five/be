@@ -14,6 +14,10 @@ export class ApiConfigService {
     return this.getString('API_DOMAIN');
   }
 
+  get mqttBrokerUrl(): string {
+    return this.getString('MQTT_BROKER_URL');
+  }
+
   get keycloakConfig() {
     return {
       clientId: this.getString('KEYCLOAK_CLIENT_ID'),

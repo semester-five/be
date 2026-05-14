@@ -20,6 +20,7 @@ import { DeliveryModule } from './modules/delivery/delivery.module';
 import { EventsModule } from './modules/events/events.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { StatisticsModule } from './modules/statistics/statistics.module';
+import { MqttModule } from './modules/mqtt/mqtt.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { StatisticsModule } from './modules/statistics/statistics.module';
     DeliveryModule,
     EventsModule,
     StatisticsModule,
+    MqttModule,
   ],
   providers: [
     {

@@ -10,6 +10,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { LockerEntity } from './entities/lockers.entity';
 import { CqrsModule } from '@nestjs/cqrs';
 import { LockersRepository } from './repositories/lockers.repository';
+import { MqttModule } from '../mqtt/mqtt.module';
 
 const commandHandlers = [
   LockerCreateCommandHandler,
@@ -23,7 +24,7 @@ const queryHandlers = [
 ];
 
 @Module({
-  imports: [TypeOrmModule.forFeature([LockerEntity]), CqrsModule],
+  imports: [TypeOrmModule.forFeature([LockerEntity]), CqrsModule, MqttModule],
   providers: [...commandHandlers, ...queryHandlers, LockersRepository],
   controllers: [LockersController],
   exports: [LockersRepository],
