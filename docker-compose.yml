@@ -8,6 +8,7 @@ services:
     environment:
       DB_HOST: facelocker-database
       KEYCLOAK_BASE_URL: http://facelocker-keycloak:8080
+      MQTT_BROKER_URL: mqtt://mqtt5:1883
     ports:
       - "$PORT:$PORT"
     depends_on:
@@ -20,7 +21,7 @@ services:
     build: postgres
     container_name: facelocker-database
     volumes:
-    - ./postgres:/docker-entrypoint-initdb.d
+      - ./postgres:/docker-entrypoint-initdb.d
     environment:
       POSTGRES_USER: $DB_USERNAME
       POSTGRES_PASSWORD: $DB_PASSWORD
@@ -57,5 +58,16 @@ services:
         "--features=preview,admin-fine-grained-authz,token-exchange",
         "--spi-scripts-default-provider=default",
         "--spi-scripts-default-enabled=true",
-        "--spi-authorization-policy-provider-js-enabled=true"
+        "--spi-authorization-policy-provider-js-enabled=true",
       ]
+  mqtt5:
+    image: eclipse-mosquitto
+    container_name: mqtt5
+    ports:
+      - "1883:1883" #default mqtt port
+      - "9001:9001" #default mqtt port for websockets
+    volumes:
+      - ./mosquitto/config:/mosquitto/config:rw
+      - ./mosquitto/data:/mosquitto/data:rw
+      - ./mosquitto/log:/mosquitto/log:rw
+    restart: unless-stopped
