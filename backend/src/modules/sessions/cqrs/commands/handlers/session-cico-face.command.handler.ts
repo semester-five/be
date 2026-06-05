@@ -115,7 +115,7 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
       }
     }
 
-    return mostSimilarSession;
+    return highestSimilarity >= 0.6 ? mostSimilarSession : null;
   }
 
   private compareFaceVectors(vectorA: number[], vectorB: number[]): number {

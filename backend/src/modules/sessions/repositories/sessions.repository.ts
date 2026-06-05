@@ -169,7 +169,7 @@ export class SessionsRepository {
       await this.repository.find({
         where: {
           authMethod: AuthMethodVO.FACE_ID,
-          status: SessionStatusVO.ACTIVE,
+          status: SessionStatusVO.CHECKED_IN,
         },
         relations: ['locker'],
       }),
