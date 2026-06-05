@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Session } from '../../domain/session';
+import { SessionStatusVO } from '../../value-objects/session-status.vo';
 
 export class LockerResponseDto {
   @ApiProperty()
@@ -17,6 +18,9 @@ export class CICOResponseDto {
   sessionId: string;
 
   @ApiProperty()
+  sessionStatus: SessionStatusVO;
+
+  @ApiProperty()
   locker: LockerResponseDto;
 
   @ApiProperty()
@@ -28,6 +32,7 @@ export class CICOResponseDto {
   static fromDomain(session: Session): CICOResponseDto {
     return {
       sessionId: session.id,
+      sessionStatus: session.status,
       locker: {
         id: session.lockerId,
         lockerCode: session.locker.code,

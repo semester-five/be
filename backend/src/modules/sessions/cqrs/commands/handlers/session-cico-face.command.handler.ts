@@ -7,6 +7,7 @@ import { SessionStatusVO } from 'src/modules/sessions/value-objects/session-stat
 import { AuthMethodVO } from 'src/modules/sessions/value-objects/auth-method.vo';
 import { LockerStatusVO } from 'src/modules/lockers/value-objects/locker-status.vo';
 import { ServiceUnavailableException } from '@nestjs/common';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import axios from 'axios';
 
 @CommandHandler(SessionCICOFaceCommand)
@@ -27,7 +28,7 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
 
     if (similarSession) {
       similarSession.checkOutAt = new Date();
-      similarSession.status = SessionStatusVO.COMPLETED;
+      similarSession.status = SessionStatusVO.CHECKED_OUT;
 
       await this.sessionsRepository.save(similarSession);
 
@@ -54,7 +55,7 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
       locker: availableLocker,
       checkInAt: new Date(),
       checkOutAt: null,
-      status: SessionStatusVO.ACTIVE,
+      status: SessionStatusVO.CHECKED_IN,
       authMethod: AuthMethodVO.FACE_ID,
       age: command.age,
       gender: command.gender,
@@ -75,17 +76,22 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
   }
 
   private async openLockerDoor(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     openUrl: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     lockerCode: string,
   ): Promise<void> {
-    try {
-      await axios.get(openUrl, { timeout: 5000 });
-    } catch {
-      throw new ServiceUnavailableException({
-        code: 'DOOR_OPEN_FAILED',
-        message: `Unable to open locker door for ${lockerCode}`,
-      });
-    }
+    // try {
+    // await axios.get(openUrl, { timeout: 5000 });
+    // } catch {
+    // throw new ServiceUnavailableException({
+    //   code: 'DOOR_OPEN_FAILED',
+    //   message: `Unable to open locker door for ${lockerCode}`,
+    // });
+    // console.warn(
+    //   `Failed to open locker door for ${lockerCode}, but session will proceed`,
+    // );
+    // }
   }
 
   private findTheSimilarFace(
