@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { CommandBus } from '@nestjs/cqrs';
 import { SessionsRepository } from '../repositories/sessions.repository';
@@ -6,6 +6,10 @@ import { NotificationCreateByEventCodeCommand } from 'src/modules/notifications/
 
 @Injectable()
 export class SessionLockedNotificationCron {
+  private readonly logger: Logger = new Logger(
+    SessionLockedNotificationCron.name,
+  );
+
   constructor(
     private readonly sessionsRepository: SessionsRepository,
     private readonly commandBus: CommandBus,
@@ -13,6 +17,9 @@ export class SessionLockedNotificationCron {
 
   @Cron('0 */5 * * * *')
   async handle(): Promise<void> {
+    this.logger.debug(
+      'Start a cron job to check for sessions locked over 24 hours',
+    );
     const now = new Date();
     const olderThan24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     const olderThan24HoursAnd5Minutes = new Date(
@@ -38,6 +45,9 @@ export class SessionLockedNotificationCron {
           }),
         ),
       ),
+    );
+    this.logger.debug(
+      `Finished processing ${matchedSessions.length} sessions locked over 24 hours`,
     );
   }
 }

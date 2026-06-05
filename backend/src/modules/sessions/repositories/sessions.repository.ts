@@ -148,7 +148,7 @@ export class SessionsRepository {
     const entities = await this.repository
       .createQueryBuilder('session')
       .leftJoinAndSelect('session.locker', 'locker')
-      .where('session.status = :status', { status: SessionStatusVO.ACTIVE })
+      .where('session.status = :status', { status: SessionStatusVO.CHECKED_IN })
       .andWhere('session.checkInAt > :from', { from })
       .andWhere('session.checkInAt <= :to', { to })
       .orderBy('session.checkInAt', 'ASC')

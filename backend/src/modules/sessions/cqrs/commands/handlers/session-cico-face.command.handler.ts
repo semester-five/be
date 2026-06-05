@@ -119,23 +119,40 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
   }
 
   private compareFaceVectors(vectorA: number[], vectorB: number[]): number {
-    if (vectorA.length !== vectorB.length) {
-      throw new Error('Face vectors must be of the same length');
+    if (!Array.isArray(vectorA) || !Array.isArray(vectorB)) {
+      throw new Error('Face vectors must be arrays');
     }
 
-    const dotProduct = vectorA.reduce(
-      (sum, value, index) => sum + value * vectorB[index],
-      0,
-    );
-    const normA = Math.sqrt(
-      vectorA.reduce((sum, value) => sum + value * value, 0),
-    );
-    const normB = Math.sqrt(
-      vectorB.reduce((sum, value) => sum + value * value, 0),
-    );
-    const denominator = normA * normB;
+    if (vectorA.length === 0 || vectorB.length === 0) {
+      throw new Error('Face vectors must not be empty');
+    }
 
-    if (denominator === 0) {
+    if (vectorA.length !== vectorB.length) {
+      throw new Error(
+        `Face vectors must be of the same length: ${vectorA.length} !== ${vectorB.length}`,
+      );
+    }
+
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+
+    for (let i = 0; i < vectorA.length; i++) {
+      const a = Number(vectorA[i]);
+      const b = Number(vectorB[i]);
+
+      if (!Number.isFinite(a) || !Number.isFinite(b)) {
+        throw new Error(`Invalid face vector value at index ${i}`);
+      }
+
+      dotProduct += a * b;
+      normA += a * a;
+      normB += b * b;
+    }
+
+    const denominator = Math.sqrt(normA) * Math.sqrt(normB);
+
+    if (denominator <= Number.EPSILON) {
       return 0;
     }
 
