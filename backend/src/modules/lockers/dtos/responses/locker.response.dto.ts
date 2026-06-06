@@ -53,6 +53,12 @@ export class LockerResponseDto {
   })
   doorState: DoorStateVO;
 
+  @ApiProperty({
+    example: false,
+    description: 'Whether the locker has an item inside',
+  })
+  hasItem: boolean;
+
   @ApiProperty()
   createdAt: Date;
 
@@ -69,6 +75,7 @@ export class LockerResponseDto {
       closeUrl: locker.closeUrl,
       status: locker.status,
       doorState: locker.doorState,
+      hasItem: locker.hasItem,
       createdAt: locker.createdAt,
       updatedAt: locker.updatedAt,
     };

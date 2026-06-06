@@ -23,6 +23,7 @@ export const AppDataSource = new DataSource({
   seeds: [
     __dirname + '/../../../modules/**/entities/seeds/*{.ts,.js}',
     __dirname + '/../../../modules/**/infra/seeds/*{.ts,.js}',
+    __dirname + '/seeds/*{.ts,.js}',
   ],
   cli: {
     entitiesDir: 'src',

@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { LockerSizeVO } from '../../value-objects/locker-size.vo';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { LockerStatusVO } from '../../value-objects/locker-status.vo';
 import { DoorStateVO } from '../../value-objects/door-state.vo';
 import { Locker } from '../../domain/lockers';
@@ -63,6 +63,13 @@ export class LockerCreateRequestDto {
   @IsEnum(DoorStateVO)
   doorState: DoorStateVO;
 
+  @ApiPropertyOptional({
+    example: false,
+    description: 'Whether the locker has an item inside',
+  })
+  @IsOptional()
+  hasItem?: boolean;
+
   static toDomain(dto: LockerCreateRequestDto): Locker {
     return Locker.create({
       code: dto.code,
@@ -72,6 +79,7 @@ export class LockerCreateRequestDto {
       closeUrl: dto.closeUrl,
       status: dto.status,
       doorState: dto.doorState,
+      hasItem: dto.hasItem ?? false,
     });
   }
 }

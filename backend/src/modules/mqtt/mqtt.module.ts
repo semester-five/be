@@ -3,9 +3,11 @@ import { MqttService } from './mqtt.service';
 import { ClientsModule } from '@nestjs/microservices/module/clients.module';
 import { Transport } from '@nestjs/microservices/enums/transport.enum';
 import { ApiConfigService } from 'src/shared/services/api-config.service';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({
   imports: [
+    CqrsModule,
     ClientsModule.registerAsync([
       {
         name: 'MQTT_SERVICE',

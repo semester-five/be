@@ -4,6 +4,10 @@ import { LockersRepository } from 'src/modules/lockers/repositories/lockers.repo
 import { NotFoundException } from '@nestjs/common';
 import { MqttService } from 'src/modules/mqtt/mqtt.service';
 import { DoorStateVO } from 'src/modules/lockers/value-objects/door-state.vo';
+import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+
+const CABINET_1_ID = '11111111-1111-1111-1111-111111111111' as Uuid;
+const CABINET_2_ID = '22222222-2222-2222-2222-222222222222' as Uuid;
 
 @CommandHandler(LockerUpdateStateCommand)
 export class LockerUpdateStateCommandHandler implements ICommandHandler<LockerUpdateStateCommand> {
@@ -25,10 +29,16 @@ export class LockerUpdateStateCommandHandler implements ICommandHandler<LockerUp
       doorState: command.doorState ?? existingLocker.doorState,
     });
 
-    this.mqttService.publish(
-      'lockers/update',
-      `Locker ${existingLocker.code} updated: door ` +
-        (existingLocker.doorState === DoorStateVO.OPEN ? 'opened' : 'closed'),
-    );
+    const cabinet =
+      command.id === CABINET_1_ID ? 1 : command.id === CABINET_2_ID ? 2 : 0;
+
+    if (cabinet === 0) return;
+
+    const type = command.doorState === DoorStateVO.OPEN ? 'OPEN' : 'CLOSE';
+
+    this.mqttService.publish('lockers/commands', {
+      type,
+      cabinet,
+    });
   }
 }

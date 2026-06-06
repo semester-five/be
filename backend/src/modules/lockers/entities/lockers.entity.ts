@@ -28,6 +28,9 @@ export class LockerEntity extends AbstractEntity {
   @Column({ enum: DoorStateVO, type: 'enum' })
   doorState: DoorStateVO;
 
+  @Column({ default: false })
+  hasItem: boolean;
+
   @OneToMany(() => SessionEntity, (session) => session.locker)
   sessions: SessionEntity[];
 }

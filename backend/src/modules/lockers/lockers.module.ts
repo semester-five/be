@@ -4,6 +4,7 @@ import { LockerCreateCommandHandler } from './cqrs/commands/handlers/locker-crea
 import { LockerUpdateCommandHandler } from './cqrs/commands/handlers/locker-update.command.handler';
 import { LockerUpdateStateCommandHandler } from './cqrs/commands/handlers/locker-update-state.command.handler';
 import { LockerDeleteCommandHandler } from './cqrs/commands/handlers/locker-delete.command.handler';
+import { LockerSyncStatusCommandHandler } from './cqrs/commands/handlers/locker-sync-status.command.handler';
 import { LockersGetByFiltersQueryHandler } from './cqrs/queries/handlers/lockers-get-by-filters.query.handler';
 import { LockerGetByIdQueryHandler } from './cqrs/queries/handlers/locker-get-by-id.query.handler';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,6 +18,7 @@ const commandHandlers = [
   LockerUpdateCommandHandler,
   LockerUpdateStateCommandHandler,
   LockerDeleteCommandHandler,
+  LockerSyncStatusCommandHandler,
 ];
 const queryHandlers = [
   LockersGetByFiltersQueryHandler,

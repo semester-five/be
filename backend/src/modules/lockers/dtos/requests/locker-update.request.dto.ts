@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { LockerSizeVO } from '../../value-objects/locker-size.vo';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { LockerStatusVO } from '../../value-objects/locker-status.vo';
 import { DoorStateVO } from '../../value-objects/door-state.vo';
 import { Locker } from '../../domain/lockers';
@@ -57,6 +57,13 @@ export class LockerUpdateRequestDto {
   })
   @IsEnum(DoorStateVO)
   doorState: DoorStateVO;
+
+  @ApiProperty({
+    example: false,
+    description: 'Whether the locker has an item inside',
+  })
+  @IsBoolean()
+  hasItem: boolean;
 
   static toDomain(
     id: Uuid,

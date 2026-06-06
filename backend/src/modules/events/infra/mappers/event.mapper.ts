@@ -1,7 +1,6 @@
 import { Event } from 'src/modules/events/domain/entities/event';
 import { EventEntity } from '../persistence/event.entity';
 import { ChannelEnum } from 'src/modules/events/domain/value-objects/channel.vo';
-import _ from 'lodash';
 
 export class EventMapper {
   static toEntity(event: Event): EventEntity {
@@ -22,7 +21,7 @@ export class EventMapper {
   }
 
   static toEntities(events: Event[]): EventEntity[] {
-    return _.map(events, (event) => this.toEntity(event));
+    return events.map((event) => this.toEntity(event));
   }
 
   static toDomain(eventEntity: EventEntity): Event {
@@ -43,6 +42,6 @@ export class EventMapper {
   }
 
   static toDomains(eventEntities: EventEntity[]): Event[] {
-    return _.map(eventEntities, (eventEntity) => this.toDomain(eventEntity));
+    return eventEntities.map((eventEntity) => this.toDomain(eventEntity));
   }
 }

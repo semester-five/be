@@ -1,6 +1,5 @@
 import { Locker } from '../domain/lockers';
 import { LockerEntity } from '../entities/lockers.entity';
-import { map } from 'lodash';
 
 export class LockersMapper {
   static toEntity(locker: Locker): LockerEntity {
@@ -13,6 +12,7 @@ export class LockersMapper {
       closeUrl: locker.closeUrl,
       status: locker.status,
       doorState: locker.doorState,
+      hasItem: locker.hasItem,
       createdAt: locker.createdAt,
       updatedAt: locker.updatedAt,
       sessions: [],
@@ -20,7 +20,7 @@ export class LockersMapper {
   }
 
   static toEntities(lockers: Locker[]): LockerEntity[] {
-    return map(lockers, this.toEntity.bind(this)) as LockerEntity[];
+    return lockers.map((locker) => this.toEntity(locker));
   }
 
   static toDomain(lockerEntity: LockerEntity): Locker {
@@ -33,13 +33,14 @@ export class LockersMapper {
       closeUrl: lockerEntity.closeUrl,
       status: lockerEntity.status,
       doorState: lockerEntity.doorState,
+      hasItem: lockerEntity.hasItem,
       createdAt: lockerEntity.createdAt,
       updatedAt: lockerEntity.updatedAt,
     };
   }
 
   static toDomains(lockerEntities: LockerEntity[]): Locker[] {
-    return map(lockerEntities, this.toDomain.bind(this)) as Locker[];
+    return lockerEntities.map((lockerEntity) => this.toDomain(lockerEntity));
   }
 
   static toDomainOrNull(lockerEntity: LockerEntity | null): Locker | null {

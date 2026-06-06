@@ -14,6 +14,7 @@ export class Locker extends BaseEntity {
     public readonly closeUrl: string,
     public readonly status: LockerStatusVO,
     public readonly doorState: DoorStateVO,
+    public readonly hasItem: boolean,
     id: Uuid,
     createdAt: Date,
     updatedAt: Date,
@@ -31,6 +32,7 @@ export class Locker extends BaseEntity {
     return {
       ...props,
       id: props.id ?? generateUuid(),
+      hasItem: props.hasItem ?? false,
       createdAt: props.createdAt ?? new Date(),
       updatedAt: props.updatedAt ?? new Date(),
     };

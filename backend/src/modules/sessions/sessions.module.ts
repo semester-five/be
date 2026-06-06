@@ -13,6 +13,7 @@ import { QRTokensModule } from '../qr-tokens/qr-tokens.module';
 import { LockersModule } from '../lockers/lockers.module';
 import { SessionLockedNotificationCron } from './tasks/session-locked-notification.cron';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { MqttModule } from '../mqtt/mqtt.module';
 
 const commandHandlers = [
   SessionCICOFaceCommandHandler,
@@ -32,6 +33,7 @@ const queryHandlers = [
     QRTokensModule,
     LockersModule,
     NotificationsModule,
+    MqttModule,
   ],
   controllers: [SessionsController],
   providers: [
