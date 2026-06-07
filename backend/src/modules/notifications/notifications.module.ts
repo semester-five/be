@@ -6,6 +6,8 @@ import { NotificationRepository } from './infra/persistence/notification.reposit
 import { NotificationCreateCommandHandler } from './use-case/commands/handlers/notification-create.command.handler';
 import { NotificationCreateByEventCodeCommandHandler } from './use-case/commands/handlers/notification-create-by-event-code.command.handler';
 import { SendNotificationHandler } from './use-case/events/handlers/send-notification.handler';
+import { SendAdminWebSocketNotificationHandler } from './use-case/events/handlers/send-admin-ws-notification.handler';
+import { NotificationsGateway } from './presentation/gateways/notification.gateway';
 import { SubscriptionsModule } from 'src/modules/subscriptions/subscriptions.module';
 import { DeliveryModule } from 'src/modules/delivery/delivery.module';
 import { NotificationController } from './presentation/controllers/notification.controller';
@@ -18,7 +20,10 @@ const commandHandlers = [
   NotificationCreateCommandHandler,
   NotificationCreateByEventCodeCommandHandler,
 ];
-const eventHandlers = [SendNotificationHandler];
+const eventHandlers = [
+  SendNotificationHandler,
+  SendAdminWebSocketNotificationHandler,
+];
 const queryHandlers = [NotificationsGetByUserIdQueryHandler];
 
 @Module({
@@ -36,6 +41,7 @@ const queryHandlers = [NotificationsGetByUserIdQueryHandler];
       provide: NOTIFICATION_DI_TOKEN.REPOSITORY,
       useClass: NotificationRepository,
     },
+    NotificationsGateway,
     ...commandHandlers,
     ...eventHandlers,
     ...queryHandlers,

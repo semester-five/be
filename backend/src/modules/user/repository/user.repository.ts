@@ -29,6 +29,10 @@ export class UserRepository {
     return admins.map((admin) => admin.id);
   }
 
+  async findByKeyCloakId(keyCloakId: Uuid): Promise<UserEntity | null> {
+    return this.userRepository.findOneBy({ keyCloakId });
+  }
+
   async findById(id: Uuid): Promise<UserEntity | null> {
     return this.userRepository.findOneBy({
       id,
