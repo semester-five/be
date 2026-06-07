@@ -47,6 +47,7 @@ export class SessionsController {
   @ApiOperation({ summary: 'Check-in/Check-out with FaceID' })
   @ApiResponse({ status: 200, description: 'Check-in/Check-out successful' })
   async cicoByFace(@Body() body: CICOFaceRequestDto): Promise<CICOResponseDto> {
+    console.log('Gender ', body.gender);
     return CICOResponseDto.fromDomain(
       await this.commandBus.execute(
         new SessionCICOFaceCommand(body.faceVector, body.age, body.gender),

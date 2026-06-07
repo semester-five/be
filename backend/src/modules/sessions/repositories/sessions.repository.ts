@@ -43,7 +43,7 @@ export class SessionsRepository {
       await this.repository.findOne({
         where: {
           lockerId,
-          status: SessionStatusVO.ACTIVE,
+          status: SessionStatusVO.CHECKED_IN,
         },
         relations: ['locker'],
       }),
@@ -87,7 +87,9 @@ export class SessionsRepository {
     const queryBuilder = this.repository
       .createQueryBuilder('session')
       .leftJoinAndSelect('session.locker', 'locker')
-      .where('session.status = :status', { status: SessionStatusVO.ACTIVE });
+      .where('session.status = :status', {
+        status: SessionStatusVO.CHECKED_IN,
+      });
 
     const [entities, totalRecords] = await queryBuilder
       .skip((pageNumber - 1) * pageSize)
@@ -109,7 +111,7 @@ export class SessionsRepository {
       await this.repository.findOne({
         where: {
           userId,
-          status: SessionStatusVO.ACTIVE,
+          status: SessionStatusVO.CHECKED_IN,
         },
         relations: ['locker'],
       }),
@@ -119,7 +121,7 @@ export class SessionsRepository {
   async findExpiredSessions(expiredAt: Date): Promise<Session[]> {
     const entities = await this.repository.find({
       where: {
-        status: SessionStatusVO.ACTIVE,
+        status: SessionStatusVO.CHECKED_IN,
       },
       relations: ['locker'],
     });
@@ -135,7 +137,7 @@ export class SessionsRepository {
 
   async findAllActive(): Promise<Session[]> {
     const entities = await this.repository.find({
-      where: { status: SessionStatusVO.ACTIVE },
+      where: { status: SessionStatusVO.CHECKED_IN },
       relations: ['locker'],
     });
     return SessionsMapper.toDomains(entities);

@@ -1,7 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsEnum, IsNotEmpty, Min } from 'class-validator';
-import { Gender } from 'src/modules/user/domain/gender';
+import { IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CICOFaceRequestDto {
   @ApiProperty({
@@ -30,9 +28,6 @@ export class CICOFaceRequestDto {
       'Gender of the person in the image, used for additional verification',
     example: 'MALE',
   })
-  @Transform(({ value }): string =>
-    typeof value === 'string' ? value.toUpperCase() : value,
-  )
-  @IsEnum(Gender)
-  gender: Gender;
+  @IsString()
+  gender: string;
 }

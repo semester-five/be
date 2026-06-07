@@ -15,8 +15,7 @@ export class LockersMapper {
       hasItem: locker.hasItem,
       createdAt: locker.createdAt,
       updatedAt: locker.updatedAt,
-      sessions: [],
-    };
+    } as LockerEntity;
   }
 
   static toEntities(lockers: Locker[]): LockerEntity[] {

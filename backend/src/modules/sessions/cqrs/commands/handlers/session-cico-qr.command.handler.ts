@@ -11,7 +11,11 @@ import {
   BadRequestException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import axios from 'axios';
+import { MqttService } from 'src/modules/mqtt/mqtt.service';
+import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+
+const CABINET_1_ID = '11111111-1111-1111-1111-111111111111' as Uuid;
+const CABINET_2_ID = '22222222-2222-2222-2222-222222222222' as Uuid;
 
 @CommandHandler(SessionCICOQRCommand)
 export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQRCommand> {
@@ -19,6 +23,7 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
     private readonly sessionsRepository: SessionsRepository,
     private readonly lockersRepository: LockersRepository,
     private readonly qrTokensService: QRTokensService,
+    private readonly mqttService: MqttService,
   ) {}
 
   async execute(command: SessionCICOQRCommand): Promise<Session> {
@@ -41,7 +46,7 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
       const completedSession = {
         ...activeSession,
         checkOutAt: new Date(),
-        status: SessionStatusVO.COMPLETED,
+        status: SessionStatusVO.CHECKED_OUT,
       } as Session;
 
       await this.sessionsRepository.save(completedSession);
@@ -50,6 +55,11 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
         activeSession.lockerId,
         LockerStatusVO.AVAILABLE,
       );
+
+      const cabinet = this.toCabinet(activeSession.lockerId);
+      if (cabinet) {
+        this.mqttService.publish('lockers/commands', { type: 'OPEN', cabinet });
+      }
 
       await this.qrTokensService.markAsUsed(verifiedToken.id);
 
@@ -71,7 +81,7 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
       locker: availableLocker,
       checkInAt: new Date(),
       checkOutAt: null,
-      status: SessionStatusVO.ACTIVE,
+      status: SessionStatusVO.CHECKED_IN,
       authMethod: AuthMethodVO.QR_CODE,
       age: null,
       gender: null,
@@ -86,7 +96,10 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
       LockerStatusVO.IN_USE,
     );
 
-    await this.openLockerDoor(availableLocker.openUrl, availableLocker.code);
+    const cabinet = this.toCabinet(availableLocker.id);
+    if (cabinet) {
+      this.mqttService.publish('lockers/commands', { type: 'OPEN', cabinet });
+    }
 
     if (verifiedToken) {
       await this.qrTokensService.markAsUsed(verifiedToken.id);
@@ -95,17 +108,9 @@ export class SessionCICOQRCommandHandler implements ICommandHandler<SessionCICOQ
     return session;
   }
 
-  private async openLockerDoor(
-    openUrl: string,
-    lockerCode: string,
-  ): Promise<void> {
-    try {
-      await axios.get(openUrl, { timeout: 5000 });
-    } catch {
-      throw new ServiceUnavailableException({
-        code: 'DOOR_OPEN_FAILED',
-        message: `Unable to open locker door for ${lockerCode}`,
-      });
-    }
+  private toCabinet(lockerId: Uuid): number | null {
+    if (lockerId === CABINET_1_ID) return 1;
+    if (lockerId === CABINET_2_ID) return 2;
+    return null;
   }
 }

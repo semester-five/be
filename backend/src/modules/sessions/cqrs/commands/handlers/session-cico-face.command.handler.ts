@@ -7,14 +7,18 @@ import { SessionStatusVO } from 'src/modules/sessions/value-objects/session-stat
 import { AuthMethodVO } from 'src/modules/sessions/value-objects/auth-method.vo';
 import { LockerStatusVO } from 'src/modules/lockers/value-objects/locker-status.vo';
 import { ServiceUnavailableException } from '@nestjs/common';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import axios from 'axios';
+import { MqttService } from 'src/modules/mqtt/mqtt.service';
+import { Uuid } from 'src/shared/domain/value-objects/uuid.vo';
+
+const CABINET_1_ID = '11111111-1111-1111-1111-111111111111' as Uuid;
+const CABINET_2_ID = '22222222-2222-2222-2222-222222222222' as Uuid;
 
 @CommandHandler(SessionCICOFaceCommand)
 export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCICOFaceCommand> {
   constructor(
     private readonly sessionsRepository: SessionsRepository,
     private readonly lockersRepository: LockersRepository,
+    private readonly mqttService: MqttService,
   ) {}
 
   async execute(command: SessionCICOFaceCommand): Promise<Session> {
@@ -37,6 +41,11 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
         LockerStatusVO.AVAILABLE,
       );
 
+      const cabinet = this.toCabinet(similarSession.lockerId);
+      if (cabinet) {
+        this.mqttService.publish('lockers/commands', { type: 'OPEN', cabinet });
+      }
+
       return similarSession;
     }
 
@@ -48,6 +57,8 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
         message: 'No available lockers',
       });
     }
+
+    console.log('Gender:', command.gender);
 
     const session = Session.create({
       userId: null,
@@ -70,28 +81,18 @@ export class SessionCICOFaceCommandHandler implements ICommandHandler<SessionCIC
       LockerStatusVO.IN_USE,
     );
 
-    await this.openLockerDoor(availableLocker.openUrl, availableLocker.code);
+    const cabinet = this.toCabinet(availableLocker.id);
+    if (cabinet) {
+      this.mqttService.publish('lockers/commands', { type: 'OPEN', cabinet });
+    }
 
     return session;
   }
 
-  private async openLockerDoor(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    openUrl: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    lockerCode: string,
-  ): Promise<void> {
-    // try {
-    // await axios.get(openUrl, { timeout: 5000 });
-    // } catch {
-    // throw new ServiceUnavailableException({
-    //   code: 'DOOR_OPEN_FAILED',
-    //   message: `Unable to open locker door for ${lockerCode}`,
-    // });
-    // console.warn(
-    //   `Failed to open locker door for ${lockerCode}, but session will proceed`,
-    // );
-    // }
+  private toCabinet(lockerId: Uuid): number | null {
+    if (lockerId === CABINET_1_ID) return 1;
+    if (lockerId === CABINET_2_ID) return 2;
+    return null;
   }
 
   private findTheSimilarFace(
